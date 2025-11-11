@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elegant Dashboard — Bengaluru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: #bfbfbf;
+      --line: #2a2a2a;
+      --glow: #ffffff33;
+      --accent: #fff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #111 0%, #000 100%);
+      color: var(--fg);
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+
+    .shell {
+      width: min(1080px, 95vw);
+      height: min(96vh, 860px);
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
+      gap: 22px;
+      align-items: center;
+      justify-items: center;
+      animation: fadeIn 0.8s ease both;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    /* Quote */
+    .quote {
+      text-align: center;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 0 12px #ffffff15;
+      max-width: 900px;
+      transition: opacity 0.6s ease;
+    }
+
+    /* Time */
+    .timewrap { display: grid; gap: 12px; place-items: center; }
+    .time {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      font-size: clamp(64px, 12vw, 160px);
+      text-shadow: 0 0 20px #ffffff15;
+    }
+    .ampm {
+      font-size: 0.3em;
+      opacity: 0.6;
+      margin-left: 0.3em;
+      margin-bottom: 0.4em;
+    }
+
+    .controls { display: flex; gap: 10px; align-items: center; }
+    select, .chip {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font: inherit;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    select:hover, button:hover { background: var(--fg); color: var(--bg); }
+    .chip { color: var(--muted); border-color: var(--line); }
+
+    /* Layout rows */
+    .row { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 0 20px #ffffff11;
+      backdrop-filter: blur(6px);
+      transition: all 0.3s ease;
+      animation: fadeIn 0.8s ease both;
+    }
+    .card:hover { box-shadow: 0 0 20px #ffffff33; border-color: #fff2; }
+    .card h3 { margin: 0 0 8px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); font-weight: 600; }
+
+    .weather .big { font-size: 38px; font-weight: 600; }
+    .weather .rowline { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); }
+
+    .digits { font-size: 36px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    button {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--fg);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font: inherit;
+      transition: 0.2s ease;
+    }
+
+    .news ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+    .news a { color: var(--fg); text-decoration: none; border-bottom: 1px dashed var(--line); transition: color 0.2s ease; }
+    .news a:hover { color: #ddd; }
+
+    .fade-news { animation: fadeChange 1s ease; }
+    @keyframes fadeChange { from { opacity: 0; } to { opacity: 1; } }
+
+    audio { width: 100%; filter: invert(1) hue-rotate(180deg); margin-top: 10px; }
+
+    @media (max-width: 720px) {
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="quote" id="quote">Loading…</div>
+
+    <section class="timewrap">
+      <div class="time"><span id="clock">00:00:00</span><span class="ampm" id="ampm"></span></div>
+      <div class="controls">
+        <label class="chip" for="fmt">Format</label>
+        <select id="fmt">
+          <option value="24">24-hour</option>
+          <option value="12">12-hour</option>
+        </select>
+        <span class="chip" id="date">—</span>
+        <span class="chip" id="loc">Bengaluru</span>
+      </div>
+    </section>
+
+    <section class="row">
+      <article class="card weather" id="weatherCard">
+        <h3>Weather</h3>
+        <div id="wLoading">Detecting…</div>
+        <div id="wWrap" style="display:none">
+          <div class="big" id="wTemp">--°C</div>
+          <div class="rowline"><span id="wText">—</span><span id="wWind" class="chip">Wind — km/h</span><span id="wHum" class="chip">Humidity —%</span></div>
+        </div>
+      </article>
+
+      <article class="card timer">
+        <h3>Timer</h3>
+        <div class="digits" id="timer">00:00:00</div>
+        <div class="btns">
+          <button id="tStart">Start</button>
+          <button id="tStop">Stop</button>
+          <button id="tReset">Reset</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="row">
+      <article class="card news">
+        <h3>News</h3>
+        <div id="nLoading">Fetching headlines…</div>
+        <ul id="newsList" style="display:none"></ul>
+        <div id="nHint" class="chip" style="display:none">Add your NewsAPI key for live headlines.</div>
+      </article>
+
+      <article class="card music">
+        <h3>Music</h3>
+        <audio id="player" controls preload="none">
+          <source src="./Project Music/Aaruyire.mp3" type="audio/mpeg">
+        </audio>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const clock = $('clock'), ampmEl = $('ampm'), dateEl = $('date'), fmtSel = $('fmt'), locEl = $('loc');
+
+    const savedFmt = localStorage.getItem('fmt');
+    if (savedFmt) fmtSel.value = savedFmt;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function drawClock() {
+      const d = new Date();
+      let h = d.getHours();
+      const m = d.getMinutes();
+      const s = d.getSeconds();
+      let suf = '';
+      if (fmtSel.value === '12') {
+        suf = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+      }
+      clock.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+      ampmEl.textContent = suf;
+      dateEl.textContent = d.toLocaleDateString(undefined, { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    drawClock();
+    setInterval(drawClock, 250);
+    fmtSel.addEventListener('change', () => { localStorage.setItem('fmt', fmtSel.value); drawClock(); });
+
+    const quotes = [
+      '“Time you enjoy wasting is not wasted time.”',
+      '“The future starts today, not tomorrow.”',
+      '“The two most powerful warriors are patience and time.” — Tolstoy',
+      '“Lost time is never found again.” — Franklin',
+      '“Your time is limited. Don’t waste it.” — Steve Jobs',
+      'Fun fact: Honey never spoils — edible for thousands of years.'
+    ];
+    function rotateQuote() {
+      $('quote').style.opacity = 0;
+      setTimeout(() => {
+        $('quote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+        $('quote').style.opacity = 1;
+      }, 600);
+    }
+    rotateQuote();
+    setInterval(rotateQuote, 20000);
+
+    const wLoading = $('wLoading'), wWrap = $('wWrap'), wTemp = $('wTemp'), wText = $('wText'), wWind = $('wWind'), wHum = $('wHum');
+    const W = { 0: 'Clear', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast', 45: 'Fog', 48: 'Rime fog', 51: 'Drizzle', 61: 'Rain', 95: 'Thunderstorm' };
+
+    function loadWeather(lat, lon) {
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`)
+        .then(r => r.json())
+        .then(d => {
+          const cw = d.current_weather;
+          const idx = d.hourly?.time?.indexOf(cw.time);
+          const hum = idx >= 0 ? d.hourly.relative_humidity_2m[idx] : null;
+          wTemp.textContent = Math.round(cw.temperature) + '°C';
+          wText.textContent = W[cw.weathercode] || '—';
+          wWind.textContent = `Wind ${Math.round(cw.windspeed)} km/h`;
+          wHum.textContent = hum != null ? `Humidity ${hum}%` : 'Humidity —%';
+          wLoading.style.display = 'none';
+          wWrap.style.display = 'grid';
+        })
+        .catch(() => { wLoading.textContent = 'Weather unavailable'; });
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          loadWeather(pos.coords.latitude, pos.coords.longitude);
+          locEl.textContent = 'Your location';
+        },
+        () => {
+          loadWeather(12.9716, 77.5946);
+          locEl.textContent = 'Bengaluru';
+        },
+        { timeout: 8000 }
+      );
+    } else {
+      loadWeather(12.9716, 77.5946);
+      locEl.textContent = 'Bengaluru';
+    }
+
+    const tDisp = $('timer'), tStart = $('tStart'), tStop = $('tStop'), tReset = $('tReset');
+    let tInt = null, tSec = 0;
+    const fmtT = s => `${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+    const drawT = () => (tDisp.textContent = fmtT(tSec));
+    drawT();
+
+    tStart.addEventListener('click', () => { if (!tInt) tInt = setInterval(() => { tSec++; drawT(); }, 1000); });
+    tStop.addEventListener('click', () => { clearInterval(tInt); tInt = null; });
+    tReset.addEventListener('click', () => { clearInterval(tInt); tInt = null; tSec = 0; drawT(); });
+
+    const NEWS_API_KEY = '64637f165cbb4bffa4ca82fb9c4f1f3a';
+    const nLoading = $('nLoading'), nList = $('newsList'), nHint = $('nHint');
+
+    function renderNews(items) {
+      nList.innerHTML = '';
+      items.slice(0, 5).forEach(a => {
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.href = a.url || '#';
+        link.textContent = a.title;
+        li.appendChild(link);
+        nList.appendChild(li);
+      });
+      nList.classList.add('fade-news');
+      nList.style.display = 'grid';
+      nLoading.style.display = 'none';
+    }
+
+    function loadNews() {
+      if (!NEWS_API_KEY) {
+        nLoading.style.display = 'none';
+        nHint.style.display = 'inline-block';
+        renderNews([
+          { title: 'Headlines appear after you add a NewsAPI key.', url: '#' },
+          { title: 'Sign up at newsapi.org and paste the key in the code.', url: '#' },
+          { title: 'This panel will auto-refresh every 10 min.', url: '#' }
+        ]);
+        return;
+      }
+      fetch(`https://newsapi.org/v2/top-headlines?country=in&q=Bengaluru&pageSize=5&apiKey=${NEWS_API_KEY}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.articles?.length) renderNews(d.articles);
+          else nLoading.textContent = 'No headlines now.';
+        })
+        .catch(() => (nLoading.textContent = 'News unavailable'));
+    }
+
+    loadNews();
+    setInterval(loadNews, 600000); // Auto-refresh every 10 minutes
+  </script>
+</body>
+</html>
