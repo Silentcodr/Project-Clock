@@ -6,7 +6,707 @@
   <title>Elegant Dashboard — Bengaluru</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #000000;
+      --fg: #ffffff;
+      --muted: #888888;
+      --line: #333333; /* Only for specific accents if needed */
+      --card-bg: #111111;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --accent: #ffffff;
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f4f5;
+      --fg: #18181b;
+      --muted: #71717a;
+      --line: #e4e4e7;
+      --card-bg: #ffffff;
+      --shadow-color: rgba(0, 0, 0, 0.05);
+      --accent: #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      transition: background 0.4s ease, color 0.4s ease;
+      position: relative;
+    }
+
+    /* Starfield for dark mode */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 999px;
+      background: #ffffff;
+      opacity: 0.2;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%   { opacity: 0.1; transform: scale(1); }
+      50%  { opacity: 1;   transform: scale(1.6); }
+      100% { opacity: 0.1; transform: scale(1); }
+    }
+
+    .shell {
+      width: min(1080px, 96vw);
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto auto auto auto;
+      gap: 32px; /* Increased gap for cleaner look */
+      animation: fadeIn 0.8s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .quote {
+      text-align: center;
+      color: var(--muted);
+      padding: 16px 24px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      /* No border */
+      box-shadow: 0 4px 20px var(--shadow-color);
+      letter-spacing: 0.3px;
+      font-weight: 400;
+      transition: opacity 0.5s ease, background 0.3s ease, color 0.3s ease;
+    }
+
+    .timewrap {
+      text-align: center;
+      display: grid;
+      gap: 16px;
+      justify-items: center;
+    }
+
+    .time {
+      font-family: 'Space Grotesk', sans-serif; /* New font */
+      font-weight: 700; /* Bolder */
+      letter-spacing: -0.04em; /* Tighter spacing */
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(64px, 15vw, 180px); /* Slightly larger */
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      line-height: 0.9;
+    }
+
+    .ampm {
+      font-size: 0.25em;
+      opacity: 0.6;
+      margin-left: 0.3em;
+      margin-bottom: 0.6em;
+      font-weight: 500;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Tactile Buttons */
+    select,
+    .chip,
+    button {
+      background: var(--card-bg);
+      color: var(--fg);
+      border-radius: 12px;
+      border: none; /* Removed border */
+      padding: 10px 16px;
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--line), 0 5px 10px rgba(0,0,0,0.2); /* Tactile shadow */
+      transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      top: 0;
+    }
+
+    select:hover,
+    button:hover {
+      background: var(--fg);
+      color: var(--bg);
+      box-shadow: 0 4px 0 var(--muted), 0 8px 15px rgba(0,0,0,0.3);
+    }
+
+    select:active,
+    button:active {
+      top: 4px; /* Press down effect */
+      box-shadow: 0 0 0 var(--muted), inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .chip {
+      background: transparent;
+      box-shadow: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      cursor: default;
+      top: 0 !important; /* Disable tactile for static chips */
+    }
+
+    .row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      /* Removed border */
+      border-radius: 24px;
+      padding: 24px;
+      background: var(--card-bg);
+      box-shadow: 0 4px 24px var(--shadow-color); /* Soft shadow depth */
+      backdrop-filter: blur(10px);
+      transition: box-shadow 0.3s ease, transform 0.2s ease, background 0.3s ease, color 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 32px var(--shadow-color);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      margin: 0 0 12px 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .weather .big {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .weather-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .digits {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .btns {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .facts ul {
+      margin: 0;
+      padding-left: 1.2em;
+      display: grid;
+      gap: 8px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .facts li {
+      color: var(--muted);
+    }
+
+    .music-main {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .track-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--fg);
+    }
+
+    audio {
+      width: 100%;
+      filter: invert(1) hue-rotate(180deg);
+      opacity: 0.8;
+      border-radius: 8px;
+    }
+
+    [data-theme="light"] audio {
+      filter: none;
+    }
+
+    .music-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        padding: 16px;
+        gap: 24px;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .time {
+        font-size: clamp(56px, 16vw, 90px);
+      }
+
+      .card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="dark">
+  <div id="starfield"></div>
+
+  <main class="shell">
+    <div class="quote" id="quote">Loading…</div>
+
+    <section class="timewrap">
+      <div class="time">
+        <span id="clock">00:00:00</span>
+        <span class="ampm" id="ampm"></span>
+      </div>
+      <div class="controls">
+        <label class="chip" for="fmt">Format</label>
+        <select id="fmt">
+          <option value="24">24-hour</option>
+          <option value="12">12-hour</option>
+        </select>
+        <span class="chip" id="date">—</span>
+        <span class="chip" id="loc">Bengaluru</span>
+        <button id="themeBtn">Toggle Theme</button>
+      </div>
+    </section>
+
+    <section class="row">
+      <article class="card weather">
+        <h3>Weather</h3>
+        <div id="wLoading">Detecting…</div>
+        <div id="wWrap" style="display:none;">
+          <div class="big" id="wTemp">--°C</div>
+          <div id="wText" style="margin-bottom:8px; color:var(--muted); font-weight:500;">—</div>
+          <div class="weather-meta">
+            <span class="chip" id="wWind">Wind — km/h</span>
+            <span class="chip" id="wHum">Humidity —%</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card timer">
+        <h3>Timer</h3>
+        <div class="digits" id="timer">00:00:00</div>
+        <div class="btns">
+          <button id="tStart">Start</button>
+          <button id="tStop">Stop</button>
+          <button id="tReset">Reset</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="row">
+      <article class="card facts">
+        <h3>Interesting Facts</h3>
+        <ul id="factsList"></ul>
+      </article>
+
+      <article class="card music">
+        <h3>Music</h3>
+        <div class="music-main">
+          <div class="track-title" id="trackTitle">No track loaded</div>
+          <audio id="player" controls preload="none"></audio>
+          <div class="music-controls">
+            <button id="prevSong">Prev</button>
+            <button id="playPause">Play</button>
+            <button id="nextSong">Next</button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    /******************** THEME + DECOR ********************/
+    const themeBtn = $("themeBtn");
+    const starfield = $("starfield");
+
+    function createStars(count = 140) {
+      starfield.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement("div");
+        s.className = "star";
+        const size = Math.random() * 2 + 1;
+        s.style.width = size + "px";
+        s.style.height = size + "px";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.animationDuration = (2 + Math.random() * 3) + "s";
+        s.style.animationDelay = (Math.random() * 3) + "s";
+        starfield.appendChild(s);
+      }
+    }
+
+    function applyThemeDecor() {
+      // In this new design, "light" mode is simplified to remove heavy gradients if needed,
+      // but we keep the logic intact for now.
+      const theme = document.body.dataset.theme || "dark";
+      if (theme === "light") {
+        starfield.style.opacity = "0";
+      } else {
+        starfield.style.opacity = "1";
+      }
+    }
+
+    // Initialize theme
+    (function initTheme() {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light" || savedTheme === "dark") {
+        document.body.dataset.theme = savedTheme;
+      } else {
+        document.body.dataset.theme = "dark";
+      }
+      createStars();
+      applyThemeDecor();
+    })();
+
+    themeBtn.addEventListener("click", () => {
+      const current = document.body.dataset.theme === "light" ? "light" : "dark";
+      const next = current === "light" ? "dark" : "light";
+      document.body.dataset.theme = next;
+      localStorage.setItem("theme", next);
+      applyThemeDecor();
+    });
+
+    /******************** CLOCK ********************/
+    const clockEl = $("clock");
+    const ampmEl = $("ampm");
+    const dateEl = $("date");
+    const locEl = $("loc");
+    const fmtSel = $("fmt");
+
+    const savedFmt = localStorage.getItem("fmt");
+    if (savedFmt === "12" || savedFmt === "24") {
+      fmtSel.value = savedFmt;
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function drawClock() {
+      const d = new Date();
+      let h = d.getHours();
+      const m = d.getMinutes();
+      const s = d.getSeconds();
+      let suf = "";
+
+      if (fmtSel.value === "12") {
+        suf = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12;
+      }
+
+      clockEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
+      ampmEl.textContent = suf;
+      dateEl.textContent = d.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    }
+
+    drawClock();
+    setInterval(drawClock, 250);
+
+    fmtSel.addEventListener("change", () => {
+      localStorage.setItem("fmt", fmtSel.value);
+      drawClock();
+    });
+
+    /******************** QUOTES ********************/
+    const quoteEl = $("quote");
+    const quotes = [
+      "Time you enjoy wasting is not wasted time.",
+      "The future starts today, not tomorrow.",
+      "The two most powerful warriors are patience and time.",
+      "Lost time is never found again.",
+      "Your time is limited. Don’t waste it living someone else’s life.",
+      "Honey never spoils — it can stay edible for thousands of years."
+    ];
+
+    function rotateQuote() {
+      quoteEl.style.opacity = "0";
+      setTimeout(() => {
+        const q = quotes[Math.floor(Math.random() * quotes.length)];
+        quoteEl.textContent = q;
+        quoteEl.style.opacity = "1";
+      }, 500);
+    }
+
+    rotateQuote();
+    setInterval(rotateQuote, 20000);
+
+    /******************** WEATHER ********************/
+    const wLoading = $("wLoading");
+    const wWrap = $("wWrap");
+    const wTemp = $("wTemp");
+    const wText = $("wText");
+    const wWind = $("wWind");
+    const wHum = $("wHum");
+
+    const WEATHER_TEXT = {
+      0: "Clear",
+      1: "Mainly clear",
+      2: "Partly cloudy",
+      3: "Overcast",
+      45: "Fog",
+      48: "Rime fog",
+      51: "Drizzle",
+      61: "Rain",
+      63: "Rain",
+      71: "Snow",
+      95: "Thunderstorm"
+    };
+
+    function loadWeather(lat, lon) {
+      fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relative_humidity_2m&timezone=auto`
+      )
+        .then(r => r.json())
+        .then(d => {
+          if (!d.current_weather) throw new Error("No weather");
+          const cw = d.current_weather;
+          const idx = d.hourly?.time?.indexOf(cw.time);
+          const hum =
+            idx >= 0 && d.hourly.relative_humidity_2m
+              ? d.hourly.relative_humidity_2m[idx]
+              : null;
+
+          wTemp.textContent = Math.round(cw.temperature) + "°C";
+          wText.textContent = WEATHER_TEXT[cw.weathercode] || "—";
+          wWind.textContent = `Wind ${Math.round(cw.windspeed)} km/h`;
+          wHum.textContent = hum != null ? `Humidity ${hum}%` : "Humidity —%";
+
+          wLoading.style.display = "none";
+          wWrap.style.display = "block";
+        })
+        .catch(() => {
+          wLoading.textContent = "Weather unavailable";
+        });
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          loadWeather(pos.coords.latitude, pos.coords.longitude);
+          locEl.textContent = "Your location";
+        },
+        () => {
+          loadWeather(12.9716, 77.5946);
+          locEl.textContent = "Bengaluru";
+        },
+        { timeout: 8000 }
+      );
+    } else {
+      loadWeather(12.9716, 77.5946);
+      locEl.textContent = "Bengaluru";
+    }
+
+    /******************** TIMER ********************/
+    const tDisp = $("timer");
+    const tStart = $("tStart");
+    const tStop = $("tStop");
+    const tReset = $("tReset");
+
+    let tSeconds = 0;
+    let tInt = null;
+
+    function formatTimer(sec) {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      return `${pad(h)}:${pad(m)}:${pad(s)}`;
+    }
+
+    function drawTimer() {
+      tDisp.textContent = formatTimer(tSeconds);
+    }
+
+    drawTimer();
+
+    tStart.addEventListener("click", () => {
+      if (!tInt) {
+        tInt = setInterval(() => {
+          tSeconds++;
+          drawTimer();
+        }, 1000);
+      }
+    });
+
+    tStop.addEventListener("click", () => {
+      clearInterval(tInt);
+      tInt = null;
+    });
+
+    tReset.addEventListener("click", () => {
+      clearInterval(tInt);
+      tInt = null;
+      tSeconds = 0;
+      drawTimer();
+    });
+
+    /******************** FACTS ********************/
+    const factsListEl = $("factsList");
+    const facts = [
+      // Space
+      "A day on Venus is longer than a year on Venus.",
+      "There are more stars in the universe than grains of sand on all the beaches on Earth.",
+      "Space is completely silent because there is no air to carry sound.",
+      "A spoonful of neutron-star material would weigh about 6 billion tons.",
+      "The universe is around 13.8 billion years old.",
+      // Earth
+      "Earth is the only known planet with plate tectonics.",
+      "About 71% of Earth’s surface is covered in water.",
+      "The Amazon rainforest produces about 20% of the world's oxygen.",
+      "Lightning strikes the Earth about 8 million times a day.",
+      "Mount Everest grows about 4 millimetres every year.",
+      // Life
+      "Octopuses have three hearts and blue blood.",
+      "Sharks existed before trees appeared on Earth.",
+      "Bananas are naturally slightly radioactive due to potassium-40.",
+      "You are taller in the morning than at night because gravity compresses your spine during the day.",
+      "Honey never spoils — jars found in ancient tombs are still edible.",
+      "Some turtles can breathe through their butts during hibernation.",
+      "Your brain uses about 20% of the total oxygen and calories in your body.",
+      "The human body contains enough carbon to make about 9,000 pencils."
+    ];
+
+    function loadFacts() {
+      factsListEl.innerHTML = "";
+      const usedIndexes = new Set();
+      const count = 5;
+      while (usedIndexes.size < count && usedIndexes.size < facts.length) {
+        const idx = Math.floor(Math.random() * facts.length);
+        usedIndexes.add(idx);
+      }
+      for (const idx of usedIndexes) {
+        const li = document.createElement("li");
+        li.textContent = facts[idx];
+        factsListEl.appendChild(li);
+      }
+    }
+
+    loadFacts();
+    setInterval(loadFacts, 20000);
+
+    /******************** MUSIC PLAYER ********************/
+    const audio = $("player");
+    const trackTitleEl = $("trackTitle");
+    const btnPrev = $("prevSong");
+    const btnNext = $("nextSong");
+    const btnPlayPause = $("playPause");
+
+    // Full playlist including new songs
+    const songs = [
+      { title: "Aaruyire", src: "./Project Music/Aaruyire.mp3" },
+      { title: "Aasa Kooda", src: "./Project Music/Aasa Kooda.mp3" },
+      { title: "Ale-Ale", src: "./Project Music/Ale-Ale.mp3" },
+      { title: "Ambikapathy", src: "./Project Music/Ambikapathy.mp3" },
+      { title: "Andha-Arabi-Kadaloram", src: "./Project Music/Andha-Arabi-Kadaloram.mp3" },
+      { title: "Azhagiye", src: "./Project Music/Azhagiye.mp3" }
+    ];
+
+    let currentSong = 0;
+
+    function loadSong(index, autoPlay = false) {
+      const song = songs[index];
+      if (!song) return;
+      currentSong = index;
+      audio.src = song.src;
+      trackTitleEl.textContent = song.title;
+      if (autoPlay) {
+        audio.play().catch(() => {});
+        btnPlayPause.textContent = "Pause";
+      } else {
+        btnPlayPause.textContent = "Play";
+      }
+    }
+
+    loadSong(currentSong, false);
+
+    btnPlayPause.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+        btnPlayPause.textContent = "Pause";
+      } else {
+        audio.pause();
+        btnPlayPause.textContent = "Play";
+      }
+    });
+
+    btnNext.addEventListener("click", () => {
+      const next = (currentSong + 1) % songs.length;
+      loadSong(next, true);
+    });
+
+    btnPrev.addEventListener("click", () => {
+      const prev = (currentSong - 1 + songs.length) % songs.length;
+      loadSong(prev, true);
+    });
+
+    // Auto-next when a song ends
+    audio.addEventListener("ended", () => {
+      const next = (currentSong + 1) % songs.length;
+      loadSong(next, true);
+    });
+  </script>
+</body>
+</html>
 
   <style>
     :root {
