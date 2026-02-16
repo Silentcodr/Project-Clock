@@ -151,6 +151,52 @@ body {
         display: flex;
         flex-direction: column;
         height: auto;
+        /* Allow scroll */
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .orbit-shell {
+        padding: 15px;
+        gap: 20px;
+    }
+
+    .time {
+        font-size: 60px;
+        /* Smaller for portrait phones */
+        text-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .ampm {
+        font-size: 18px;
+    }
+
+    .hub-center {
+        padding: 20px 0;
+    }
+
+    .card {
+        padding: 20px;
+        min-height: auto;
+    }
+
+    /* Hide non-essential decorative elements on small screens if needed */
+    .dev-icon {
+        opacity: 0.02;
+        /* Fainter on mobile */
+    }
+
+    /* Ensure Spotify and other widgets have reasonable heights */
+    .spotify-container {
+        height: 152px !important;
+        /* Compact fixed height for mobile */
+    }
+
+    .productivity {
+        height: 400px;
+        /* Fixed height for news/tasks to allow scrolling within */
     }
 }
 
@@ -341,13 +387,30 @@ body {
 
 .btns button {
     flex: 1;
-    background: rgba(255, 255, 255, 0.05);
-    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    /* Slightly lighter */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--fg);
-    padding: 8px;
-    border-radius: 6px;
+    padding: 10px;
+    /* Larger hit area */
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btns button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btns button:active {
+    transform: translateY(1px) scale(0.96);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
 }
 
 /* NEWS / PRODUCTIVITY */
