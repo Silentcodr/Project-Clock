@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Orbit Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A futuristic, dark-themed personal dashboard meant to be your "home base" on the web. It features a stunning glassmorphism UI, real-time widgets, and a dynamic animated background.
 
-Currently, two official plugins are available:
+![Orbit Dashboard Screenshot](./public/screenshot.png) 
+*(Note: Add a screenshot here if you have one)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+-   **Orbit UI**: A sleek, dark-themed interface with a radial gradient background and premium glassmorphism cards.
+-   **Smart News Widget**:
+    -   Automatically detects your city (e.g., "Bengaluru") via IP.
+    -   Fetches **real-time local news** from Google News.
+    -   Falls back to trending tech news if offline.
+-   **Productivity Hub**:
+    -   **Tasks**: Simple to-do list with persistence.
+    -   **Notes**: Chat-style quick notes.
+-   **Bouncing Tech Icons**: A "screensaver-style" animated background with floating icons (React, Python, etc.).
+-   **Essential Widgets**:
+    -   Real-time **Clock**.
+    -   **Weather** updates.
+    -   **Spotify** integration.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Tech Stack
 
-## Expanding the ESLint configuration
+-   **Frontend**: React (v19), TypeScript, Vite
+-   **Styling**: Vanilla CSS (Variables, Grid, Flexbox)
+-   **Icons**: Lucide React
+-   **Fonts**: Outfit, Space Grotesk, Syne (via Google Fonts)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📦 Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/Silentcodr/Project-Clock.git
+    ```
+2.  Install dependencies:
+    ```bash
+    cd Project-Clock
+    npm install
+    ```
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Deployment
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+The project is configured for **Netlify**.
+1.  Import this repository into Netlify.
+2.  The `netlify.toml` file will automatically configure the build settings (`npm run build`).
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📄 License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+MIT by [Silentcodr](https://github.com/Silentcodr)
