@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elegant Dashboard — Orbit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Syne:wght@400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=phase23_chat">
+</head>
+
+<body data-theme="dark">
+  <div id="bouncer-container"></div>
+  <div id="starfield"></div>
+
+  <main class="orbit-shell">
+
+    <!-- CENTER HUB -->
+    <section class="hub-center">
+      <div class="time-container">
+        <div class="time" id="clock">00:00</div>
+        <div class="ampm" id="ampm">PM</div>
+      </div>
+
+      <div class="date-display" id="date">MONDAY, OCT 24</div>
+
+      <!-- Quote Widget -->
+      <div class="quote-box">
+        <span id="quoteText">Loading quote...</span>
+        <span id="quoteAuthor" class="quote-author"></span>
+      </div>
+
+      <div class="controls-row">
+        <div class="greeting" id="greeting">Good Evening</div>
+        <div class="toggles">
+          <button id="fmtBtn" class="sm-btn" title="Toggle 12/24h">12H</button>
+          <button id="themeBtn" class="sm-btn" title="Toggle Theme">☀</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOP LEFT: Weather -->
+    <article class="card orbit-widget top-left weather">
+      <div class="widget-header">
+        <h3>Weather</h3>
+        <span class="loc-tag">Bengaluru</span>
+      </div>
+      <div id="wLoading">...</div>
+      <div id="wWrap"
+        style="display:none; height:100%; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="weather-main">
+          <div class="big" id="wTemp">--°</div>
+          <div id="wIcon" class="weather-icon-large">☀️</div>
+        </div>
+        <div class="weather-grid">
+          <div class="w-item">
+            <span class="lbl">Feels Like</span>
+            <span class="val" id="wFeels">--°</span>
+          </div>
+          <div class="w-item">
+            <span class="lbl">Wind</span>
+            <span class="val" id="wWind">-- km/h</span>
+          </div>
+          <div class="w-item">
+            <span class="lbl">Humidity</span>
+            <span class="val" id="wHum">--%</span>
+          </div>
+          <div class="w-item">
+            <span class="lbl">Condition</span>
+            <span class="val" id="wText">--</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- TOP RIGHT: Real Spotify Embed -->
+    <article class="card orbit-widget top-right spotify-container"
+      style="padding:0; overflow:hidden; border:none; position:relative;">
+      <div id="playlist-controls">
+        <input type="text" id="plInput" placeholder="Playlist Link/ID...">
+        <button id="plSaveBtn">Load</button>
+      </div>
+      <iframe id="spotifyFrame" style="border-radius:12px"
+        src="https://open.spotify.com/embed/playlist/0ADGCEur3ZJ9deZlFuOWIA?utm_source=generator&theme=0" width="100%"
+        height="100%" frameBorder="0" allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </article>
+
+    <!-- BOTTOM LEFT: Productivity (Swapped Phase 18) -->
+    <article class="card orbit-widget bottom-left productivity">
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="news">Bengaluru</button>
+        <button class="tab-btn" data-tab="tasks">Tasks</button>
+        <button class="tab-btn" data-tab="notes">Notes</button>
+      </div>
+
+      <!-- News Tab -->
+      <div id="tab-news" class="tab-content active">
+        <ul id="newsList">
+          <li>Loading Bengaluru news...</li>
+        </ul>
+      </div>
+
+      <div id="tab-tasks" class="tab-content">
+        <div class="todo-input-group">
+          <input type="text" id="todoInput" placeholder="New Task...">
+          <button id="todoAdd">+</button>
+        </div>
+        <ul id="todoList"></ul>
+      </div>
+
+      <div id="tab-notes" class="tab-content" style="display:none; flex-direction:column; height:100%;">
+        <div id="notesFeed" class="notes-feed">
+          <!-- Notes injected here -->
+          <div class="note-card system-note">
+            <span class="note-time">System</span>
+            <span class="note-text">Welcome to your new specific notes feed!</span>
+          </div>
+        </div>
+        <div class="note-input-group">
+          <input type="text" id="noteInput" placeholder="Type a note...">
+          <button id="noteSendBtn">➤</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- BOTTOM RIGHT: Timer (Swapped Phase 18) -->
+    <article class="card orbit-widget bottom-right timer">
+      <h3>Timer</h3>
+      <div class="digits" id="timer">00:00:00</div>
+      <div class="btns">
+        <button id="tStart">▶</button>
+        <button id="tStop">⏸</button>
+        <button id="tReset">↺</button>
+      </div>
+    </article>
+
+  </main>
+  <script src="script.js?v=phase11_fix_2"></script>
+</body>
+
+</html>
