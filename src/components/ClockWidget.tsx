@@ -2,18 +2,35 @@ import { useEffect, useState } from 'react';
 
 const ClockWidget = () => {
     const [time, setTime] = useState(new Date());
+    const [is24Hour, setIs24Hour] = useState(() => localStorage.getItem('is24Hour') === 'true');
+    const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
     useEffect(() => {
         const timer = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
 
+    // Persist Settings
+    useEffect(() => { localStorage.setItem('is24Hour', String(is24Hour)); }, [is24Hour]);
+    useEffect(() => {
+        localStorage.setItem('theme', theme);
+        document.documentElement.setAttribute('data-theme', theme);
+    }, [theme]);
+
+    // Toggle Handlers
+    const toggleFormat = () => setIs24Hour(p => !p);
+    const toggleTheme = () => setTheme(p => p === 'dark' ? 'light' : 'dark');
+
     // Format Time
     const hours = time.getHours();
     const minutes = time.getMinutes();
     const isAm = hours < 12;
-    const displayHours = hours % 12 || 12;
-    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    const displayHours = is24Hour
+        ? (hours < 10 ? `0${hours}` : hours.toString())
+        : (hours % 12 || 12).toString();
+
+    const displayMinutes = minutes < 10 ? `0${minutes}` : minutes.toString();
 
     // Format Date
     const dateStr = time.toLocaleDateString('en-US', {
@@ -33,7 +50,7 @@ const ClockWidget = () => {
         <section className="hub-center">
             <div className="time-container">
                 <div className="time" id="clock">{displayHours}:{displayMinutes}</div>
-                <div className="ampm" id="ampm">{isAm ? 'AM' : 'PM'}</div>
+                {!is24Hour && <div className="ampm" id="ampm">{isAm ? 'AM' : 'PM'}</div>}
             </div>
             <div className="date-display" id="date">{dateStr}</div>
 
@@ -46,8 +63,12 @@ const ClockWidget = () => {
             <div className="controls-row">
                 <div className="greeting" id="greeting">{getGreeting()}</div>
                 <div className="toggles">
-                    <button id="fmtBtn" className="sm-btn" title="Toggle 12/24h">12H</button>
-                    <button id="themeBtn" className="sm-btn" title="Toggle Theme">☀</button>
+                    <button id="fmtBtn" className="sm-btn" onClick={toggleFormat} title="Toggle 12/24h">
+                        {is24Hour ? '24H' : '12H'}
+                    </button>
+                    <button id="themeBtn" className="sm-btn" onClick={toggleTheme} title="Toggle Theme">
+                        {theme === 'dark' ? '☀' : '☾'}
+                    </button>
                 </div>
             </div>
         </section>

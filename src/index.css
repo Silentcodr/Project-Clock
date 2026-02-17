@@ -23,10 +23,20 @@
 
 html,
 body {
-    height: 100%;
     margin: 0;
-    overflow: hidden;
-    /* Disable global scrolling */
+    /* Default to auto height/scrolling for mobile safety */
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+/* Only apply fixed viewport behavior on Desktop/Large Screens */
+@media (min-width: 901px) {
+
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
 }
 
 body {
@@ -35,11 +45,14 @@ body {
     font-family: 'Outfit', sans-serif;
     transition: background 0.4s ease;
     position: relative;
+    /* Ensure background covers scrolling content */
+    min-height: 100vh;
 }
 
 /* BOUNCING ICONS */
 #bouncer-container {
-    position: absolute;
+    position: fixed;
+    /* Changed from absolute to fixed so it stays put while scrolling */
     inset: 0;
     z-index: 0;
     pointer-events: none;
@@ -113,8 +126,9 @@ body {
 .orbit-shell {
     position: relative;
     z-index: 10;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
+    /* Changed from height: 100vh */
     padding: 40px;
     display: grid;
     /* Fixed usage sidebars, flexible center */
@@ -139,30 +153,32 @@ body {
 
 @media (max-width: 900px) {
     .orbit-shell {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-        grid-template-areas:
-            "center"
-            "top-left"
-            "top-right"
-            "bottom-left"
-            "bottom-right";
-        overflow-y: auto;
         display: flex;
         flex-direction: column;
         height: auto;
-        /* Allow scroll */
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 40px;
+        /* Allow content to dictate height */
+        padding: 20px 15px 40px 15px;
+        /* Add bottom padding for scroll space */
+        gap: 24px;
+        overflow: visible;
+        /* Let body handle scroll */
     }
+
+    /* Reset grid area assignments for flex layout implies order usually, 
+       but we can use order property if needed. Default DOM order is fine:
+       Center -> TopLeft -> TopRight -> BottomLeft -> BottomRight (based on App.tsx structure? No, App.tsx has specific order)
+    */
+
+    /* App.tsx Structure:
+       1. Center (Clock)
+       2. Top Left (Weather)
+       3. Top Right (Spotify)
+       4. Bottom Left (Productivity)
+       5. Bottom Right (Timer)
+    */
 }
 
 @media (max-width: 600px) {
-    .orbit-shell {
-        padding: 15px;
-        gap: 20px;
-    }
-
     .time {
         font-size: 60px;
         /* Smaller for portrait phones */
@@ -190,13 +206,15 @@ body {
 
     /* Ensure Spotify and other widgets have reasonable heights */
     .spotify-container {
-        height: 152px !important;
-        /* Compact fixed height for mobile */
+        height: 160px !important;
+        /* Slightly increased for better tap targets */
+        width: 100%;
     }
 
     .productivity {
-        height: 400px;
-        /* Fixed height for news/tasks to allow scrolling within */
+        height: 450px;
+        /* Increased height for better interaction */
+        width: 100%;
     }
 }
 
